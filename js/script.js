@@ -5,7 +5,7 @@ const todoControl = document.querySelector('.todo-control'),
     todoList = document.querySelector('.todo-list'),
     todoCompleted = document.querySelector('.todo-completed');
 
-const todoData = [
+let todoData = [
     // {
     //     value: 'Сварить кофе',
     //     completed: false 
@@ -15,6 +15,15 @@ const todoData = [
     //     completed: true
     // }
 ];
+
+    let json = [];
+
+    function setLocalStorage(){
+        localStorage.setItem('data',JSON.stringify(todoData));
+        // json.push(JSON.stringify(newTodo));
+        // console.log('json: ', json);
+        // localStorage.setItem(headerInput.value, json);
+    }
 
 const render = function() {
         todoList.textContent = '';
@@ -40,15 +49,26 @@ const render = function() {
         const btnTodoComplete = li.querySelector('.todo-complete');
         btnTodoComplete.addEventListener('click',function(){
             item.completed = !item.completed;
+            setLocalStorage();
             render();
         });
 
         const btnRemove = li.querySelector('.todo-remove');
         btnRemove.addEventListener('click', function(){
-            todoList.querySelector('.todo-item').remove();
-            todoData.splice(item,1);
+            if (item.completed){
+                todoCompleted.querySelector('.todo-item').remove();
+                 
+            }
+            else {
+                todoList.querySelector('.todo-item').remove();
+                
+            }
+            todoData.splice(todoData.indexOf(item), 1);
+            setLocalStorage();
             render();
-        })
+        });
+
+       
        
     });
 }
@@ -61,18 +81,37 @@ todoControl.addEventListener('submit', function(event){
         completed: false 
     };
 
+
+
     if (headerInput.value === ''){
         alert('Введите планы');
     }
     else{
         todoData.push(newTodo);
-        localStorage.item = headerInput.value;
+        
         headerInput.value = '';
     }
     
 
+
+    setLocalStorage();
     render();
 });
 
 
+function getLocalStorage(){
+    if (localStorage.getItem('data')) todoData = JSON.parse(localStorage.getItem('data'));
+    else todoData = [];
+    
+    // let data = JSON.parse(json);
+    // console.log('data: ', data);
+    
+        // let keys = Object.keys(localStorage);
+        // for (let key of keys) 
+        //todoData.push(JSON.parse(localStorage.getItem(key)));
+            
+        
+    }
+
+getLocalStorage();
 render();
